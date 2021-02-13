@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8"/>
+    <title>Loop</title>
+</head>
+
+<body>
+<h1>th:each</h1>
+
+<ul>
+    <table>
+        <tr>
+            brand
+        </tr>
+        <th:block th:each="car : ${cars}">
+            <li th:utext="${car.brand}">..</li>
+        </th:block>
+        <!--<tr>-->
+            <!--model-->
+        <!--</tr>-->
+        <!--<th:block th:each="car : ${cars}">-->
+            <!--<li th:utext="${car.model}">..</li>-->
+        <!--</th:block>-->
+    </table>
+</ul>
+
+</body>
+
+</html>
