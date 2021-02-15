@@ -1,42 +1,61 @@
 package web.controller;
 
+import model.User;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import service.CarService;
-import service.CarServiceImpl;
+import org.springframework.web.bind.annotation.*;
+import service.UserService;
+import service.UserServiceImp;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 @Controller
 public class HelloController {
-    CarService carService = new CarServiceImpl();
+    UserService userService = new UserServiceImp();
 
-    @GetMapping(value = "/hello")
-    public String printWelcome(ModelMap model) {
-        List<String> messages = new ArrayList<>();
-        messages.add("Hello!");
-        messages.add("I'm Spring MVC application");
-        messages.add("5.2.0 version by sep'19 ");
-        model.addAttribute("messages", messages);
-        return "index";
+    @RequestMapping(value = "/")
+    public String getUsers(ModelMap model) {
+        model.addAttribute("users", userService.listUsers());
+        return "users";
     }
 
-    @RequestMapping(value="/cars", method = RequestMethod.GET)
-    public String getCar(ModelMap model,
-                          @RequestParam(value = "count", required = false) Integer count){
+    @RequestMapping("/new")
+    public String newCustomerForm(Map<String, Object> model) {
+        User user = new User();
+        model.put("user", user);
+        return "new_user";
+    }
 
-        if (count == null) {
-            model.addAttribute("cars", carService.findAll());
-        } else {
-            model.addAttribute("cars", carService.findCarByCount(count));
-        }
+    @PostMapping("/saveUser")
+    public String saveUser(@ModelAttribute("user") User user) {
+        // save user to database
+        userService.add(user);
+        return "redirect:/";
+    }
 
-        return "cars";
+    @GetMapping("/showNewUserForm")
+    public String showNewUserForm(Model model) {
+        // create model attribute to bind form data
+        User user = new User();
+        model.addAttribute("user", user);
+        return "new_user";
+    }
+
+    @GetMapping("/showFormForUpdate/{id}")
+    public String showFormForUpdate(@PathVariable( value = "id") long id, Model model) {
+        // get user from the service
+        User user = userService.getUserById(id);
+        // set user as a model attribute to pre-populate the form
+        model.addAttribute("user", user);
+        return "update_user";
+    }
+
+    @GetMapping("/deleteUser/{id}")
+    public String deleteUser(@PathVariable (value = "id") long id) {
+        // call delete user method
+        this.userService.removeUser(id);
+        return "redirect:/";
     }
 
 }

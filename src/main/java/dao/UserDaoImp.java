@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
 import java.util.List;
 
 @Repository
@@ -25,7 +24,7 @@ public class UserDaoImp implements UserDao {
     public void add(User user) {
         EntityManager em = getEntityManager();
         em.getTransaction().begin();
-        em.persist(user);
+        em.merge(user);
         em.getTransaction().commit();
     }
 
@@ -44,6 +43,12 @@ public class UserDaoImp implements UserDao {
         em.getTransaction().begin();
         em.merge(user);
         em.getTransaction().commit();
+    }
+
+    @Override
+    public User getUserById(long id) {
+        EntityManager em = getEntityManager();
+        return em.getReference(User.class, id);
     }
 
     @Override

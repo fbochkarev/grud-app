@@ -27,6 +27,11 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    public User getUserById(long id) {
+        return userDao.getUserById(id);
+    }
+
+    @Override
     public List<User> listUsers() {
         return userDao.listUsers();
     }
