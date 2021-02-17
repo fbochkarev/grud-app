@@ -1,5 +1,7 @@
 package service;
 
+import dao.UserDao;
+import dao.UserDaoImpl;
 import model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,17 +13,11 @@ import java.util.List;
 
 @Service
 public class UserServiceImp implements UserService {
-    @Autowired
-    private EntityManagerFactory emf;
-
-    public EntityManager getEntityManager() {
-        emf = Persistence.createEntityManagerFactory("grud-app");
-        return emf.createEntityManager();
-    }
+    UserDao userDao = new UserDaoImpl();
 
     @Override
     public void add(User user) {
-        EntityManager em = getEntityManager();
+        EntityManager em = userDao.getEntityManager();
         em.getTransaction().begin();
         em.merge(user);
         em.getTransaction().commit();
@@ -29,7 +25,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public void removeUser(long id) {
-        EntityManager em = getEntityManager();
+        EntityManager em = userDao.getEntityManager();
         em.getTransaction().begin();
         User user = em.find(User.class, id);
         em.remove(user);
@@ -38,7 +34,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public void updateUser(User user) {
-        EntityManager em = getEntityManager();
+        EntityManager em = userDao.getEntityManager();
         em.getTransaction().begin();
         em.merge(user);
         em.getTransaction().commit();
@@ -46,12 +42,11 @@ public class UserServiceImp implements UserService {
 
     @Override
     public User getUserById(long id) {
-        EntityManager em = getEntityManager();
-        return em.getReference(User.class, id);
+        return userDao.getUserById(id);
     }
 
     @Override
     public List<User> listUsers() {
-        return getEntityManager().createQuery("from User").getResultList();
+        return userDao.listUsers();
     }
 }
