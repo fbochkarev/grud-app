@@ -1,18 +1,19 @@
-package web.controller;
+package com.jm.web.controller;
 
-import model.User;
+import com.jm.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import service.UserService;
-import service.UserServiceImp;
+import com.jm.service.UserService;
 
 import java.util.Map;
 
 @Controller
 public class HelloController {
-    UserService userService = new UserServiceImp();
+    @Autowired
+    UserService userService;
 
     @RequestMapping(value = "/")
     public String getUsers(ModelMap model) {
