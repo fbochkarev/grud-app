@@ -1,7 +1,6 @@
 package com.jm.service;
 
 import com.jm.dao.UserDao;
-import com.jm.dao.UserDaoImpl;
 import com.jm.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,5 +35,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> listUsers() {
         return userDao.listUsers();
+    }
+
+    @Override
+    public List getUserFromUserList(String username) {
+        return userDao.getUserFromUserList(username);
     }
 }
