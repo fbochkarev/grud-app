@@ -21,26 +21,20 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void add(User user) {
         EntityManager em = getEntityManager();
-        em.getTransaction().begin();
         em.merge(user);
-        em.getTransaction().commit();
     }
 
     @Override
     public void removeUser(long id) {
         EntityManager em = getEntityManager();
-        em.getTransaction().begin();
         User user = em.find(User.class, id);
         em.remove(user);
-        em.getTransaction().commit();
     }
 
     @Override
     public void updateUser(User user) {
         EntityManager em = getEntityManager();
-        em.getTransaction().begin();
         em.merge(user);
-        em.getTransaction().commit();
     }
 
     @Override
