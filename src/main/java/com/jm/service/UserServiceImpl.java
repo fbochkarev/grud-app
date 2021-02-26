@@ -1,12 +1,11 @@
 package com.jm.service;
 
 import com.jm.dao.UserDao;
-import com.jm.dao.UserDaoImpl;
 import com.jm.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
