@@ -1,13 +1,15 @@
 package com.jm.web.controller;
 
+import com.jm.dao.RoleDaoImpl;
+import com.jm.model.Role;
 import com.jm.model.User;
+import com.jm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import com.jm.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +19,9 @@ import java.util.Map;
 public class HelloController {
     @Autowired
     UserService userService;
+
+    @Autowired
+    RoleDaoImpl roleDao;
 
     @GetMapping(value = {"/", "/index"})
     public String index() {
@@ -34,8 +39,13 @@ public class HelloController {
     public String user(@AuthenticationPrincipal User user, Model model) {
         System.out.println(getClass().getName() + "- user -" + user);
         model.addAttribute("user", user);
-        model.addAttribute("role", user.getRoles());
+//        model.addAttribute("role", user.getRoles());
         return "profile";
+    }
+
+    @ModelAttribute("roles")
+    public List<Role> initializeRoles(){
+        return roleDao.listUsers();
     }
 
     @RequestMapping("/admin/new")
@@ -45,11 +55,14 @@ public class HelloController {
         return "new_user";
     }
 
-    @PostMapping("/saveUser")
+    @PostMapping("/admin/saveUser")
     public String saveUser(@ModelAttribute("user") User user) {
         // save user to database
+
+
+        System.out.println(getClass() + " - saveUser - " + user);
         userService.add(user);
-        return "redirect:/admin";
+        return "redirect:/admin/users";
     }
 
     @GetMapping("/admin/showNewUserForm")
@@ -73,7 +86,7 @@ public class HelloController {
     public String deleteUser(@PathVariable (value = "id") long id) {
         // call delete user method
         this.userService.removeUser(id);
-        return "redirect:/users";
+        return "redirect:/admin/users";
     }
 
     @RequestMapping(value = "hello", method = RequestMethod.GET)

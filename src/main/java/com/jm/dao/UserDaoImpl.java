@@ -2,11 +2,10 @@ package com.jm.dao;
 
 import com.jm.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import javax.persistence.*;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -15,6 +14,9 @@ public class UserDaoImpl implements UserDao {
 
     private EntityManagerFactory emf;
 
+    @PersistenceContext
+    private EntityManager em = getEntityManager();
+
     public EntityManager getEntityManager() {
         emf = Persistence.createEntityManagerFactory("grud-app");
         return emf.createEntityManager();
@@ -22,17 +24,21 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void add(User user) {
-        EntityManager em = getEntityManager();
+//        EntityManager em = getEntityManager();
         em.getTransaction().begin();
-        em.merge(user);
+        System.out.println(getClass() + " - add - " + user);
+        if (user.getPassword() != null) {
+            user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        }
+        em.persist(user);
         em.getTransaction().commit();
     }
 
     @Override
     public void removeUser(long id) {
         EntityManager em = getEntityManager();
-        em.getTransaction().begin();
         User user = em.find(User.class, id);
+        em.getTransaction().begin();
         em.remove(user);
         em.getTransaction().commit();
     }
@@ -40,9 +46,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void updateUser(User user) {
         EntityManager em = getEntityManager();
-        em.getTransaction().begin();
         em.merge(user);
-        em.getTransaction().commit();
     }
 
     @Override
@@ -61,7 +65,7 @@ public class UserDaoImpl implements UserDao {
         User user = getEntityManager().createQuery(
                 "SELECT u from User u WHERE u.username = :username", User.class).
                 setParameter("username", username).getSingleResult();
-        System.out.println(getClass().getName()+ " - " + user.toString());
+        System.out.println(getClass() + " - getUserByName - " + user.toString());
         return user;
     }
 
