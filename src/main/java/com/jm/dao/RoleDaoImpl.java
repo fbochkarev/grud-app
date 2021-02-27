@@ -1,24 +1,44 @@
 package com.jm.dao;
 
 import com.jm.model.Role;
+import com.jm.model.User;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository
-public class RoleDaoImpl {
-    private EntityManagerFactory emf;
+public class RoleDaoImpl implements RoleDao{
+    @PersistenceContext
+    private EntityManager em;
 
-    public EntityManager getEntityManager() {
-        emf = Persistence.createEntityManagerFactory("grud-app");
-        return emf.createEntityManager();
+    public List<Role> listRoles() {
+        List<Role> roleList = em.createQuery("from Role").getResultList();
+        return roleList;
     }
 
-    public List<Role> listUsers() {
-        return getEntityManager().createQuery("from Role").getResultList();
+    @Override
+    public Role findOne(Long id) {
+        System.out.println(getClass() + " ");
+        List<Role> roles = listRoles();
+        Role role = roles.stream()
+                .filter(i -> id.equals(i.getId()))
+                .findAny()                                      // If 'findAny' then return found
+                .orElse(null);
+        return role;
+
+    }
+
+    @Override
+    public Role findOneByName(String rolename) {
+        Role role = em.createQuery(
+                "SELECT name from roles r WHERE r.name = 'ROLE_USER'", Role.class)
+//                "SELECT r from Role r WHERE r.name = :rolename", Role.class)
+//                .setParameter("rolename", rolename)
+                .getSingleResult();
+        System.out.println(getClass() + " - findOneByName - " + role.toString());
+        return role;
     }
 
 }

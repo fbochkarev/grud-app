@@ -43,10 +43,12 @@ public class HelloController {
         return "profile";
     }
 
+/*
     @ModelAttribute("roles")
     public List<Role> initializeRoles(){
-        return roleDao.listUsers();
+        return roleDao.listRoles();
     }
+*/
 
     @RequestMapping("/admin/new")
     public String newCustomerForm(Map<String, Object> model) {

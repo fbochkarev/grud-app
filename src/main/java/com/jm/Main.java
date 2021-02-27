@@ -1,15 +1,24 @@
 package com.jm;
 
+import com.jm.dao.RoleDao;
+import com.jm.model.User;
 import com.jm.service.UserService;
 import com.jm.service.UserServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) {
-        UserService userService = new UserServiceImpl();
+/*    @Autowired
+    UserService userService;
 
-        List users = userService.listUsers();
-        System.out.println(users);
+    public static void main(String[] args) {
+
+
+        System.out.println(userList());
     }
+
+    public List<User> userList(){
+        return userService.listUsers();
+    }*/
 }

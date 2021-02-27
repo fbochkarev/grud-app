@@ -5,64 +5,51 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.*;
-import javax.transaction.Transactional;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository
 public class UserDaoImpl implements UserDao {
 
-    private EntityManagerFactory emf;
-
     @PersistenceContext
-    private EntityManager em = getEntityManager();
+    private EntityManager em;
 
-    public EntityManager getEntityManager() {
-        emf = Persistence.createEntityManagerFactory("grud-app");
-        return emf.createEntityManager();
-    }
+    @Autowired
+    private RoleDao roleDao;
 
     @Override
     public void add(User user) {
-//        EntityManager em = getEntityManager();
-        em.getTransaction().begin();
-        System.out.println(getClass() + " - add - " + user);
         if (user.getPassword() != null) {
             user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         }
         em.persist(user);
-        em.getTransaction().commit();
     }
 
     @Override
     public void removeUser(long id) {
-        EntityManager em = getEntityManager();
         User user = em.find(User.class, id);
-        em.getTransaction().begin();
         em.remove(user);
-        em.getTransaction().commit();
     }
 
     @Override
     public void updateUser(User user) {
-        EntityManager em = getEntityManager();
         em.merge(user);
     }
 
     @Override
     public User getUserById(long id) {
-        EntityManager em = getEntityManager();
         return em.getReference(User.class, id);
     }
 
     @Override
     public List<User> listUsers() {
-        return getEntityManager().createQuery("from User").getResultList();
+        return em.createQuery("from User").getResultList();
     }
 
     @Override
     public User getUserByName(String username) {
-        User user = getEntityManager().createQuery(
+        User user = em.createQuery(
                 "SELECT u from User u WHERE u.username = :username", User.class).
                 setParameter("username", username).getSingleResult();
         System.out.println(getClass() + " - getUserByName - " + user.toString());
@@ -71,6 +58,6 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List getUserFromUserList(String username) {
-        return getEntityManager().createQuery("SELECT u from User u WHERE u.username = :username").getResultList();
+        return em.createQuery("SELECT u from User u WHERE u.username = :username").getResultList();
     }
 }

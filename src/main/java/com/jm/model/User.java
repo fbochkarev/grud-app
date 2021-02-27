@@ -1,17 +1,17 @@
 package com.jm.model;
 
+import com.jm.dao.RoleDao;
+import com.jm.dao.RoleDaoImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -107,9 +107,25 @@ public class User implements UserDetails {
         return roles;
     }
 
-    public void setRoles(String roles) {
-        this.roles = new HashSet<>();
+    public void setRoles(String rolesFrom) {
+
+        List<String> roleIds = Arrays.asList(rolesFrom.split("\\s*,\\s*"));
+        RoleDao roleDao = new RoleDaoImpl();
+        System.out.println(getClass() + " - roleIds - " + roleIds);
+        Set<Role> roles = new HashSet<>();
+        for (String roleId : roleIds) {
+//            Role roleUser = roleDao.findOne(Long.valueOf(roleId)); // если ROLE_USER гарантирована с id=1
+            Role role = roleDao.findOne(1L);
+            role.toString();// альтернативный вариант
+            roles.add(role); // создадим Set с одним значением
+        }
+        this.roles = roles;
+//        this.roles = new HashSet<>();
     }
+
+/*    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }*/
 
     @Override
     public String toString() {
