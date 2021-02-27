@@ -1,5 +1,6 @@
 package com.jm.web.controller;
 
+import com.jm.dao.RoleDao;
 import com.jm.dao.RoleDaoImpl;
 import com.jm.model.Role;
 import com.jm.model.User;
@@ -21,7 +22,7 @@ public class HelloController {
     UserService userService;
 
     @Autowired
-    RoleDaoImpl roleDao;
+    RoleDao roleDao;
 
     @GetMapping(value = {"/", "/index"})
     public String index() {
@@ -43,12 +44,10 @@ public class HelloController {
         return "profile";
     }
 
-/*
     @ModelAttribute("roles")
     public List<Role> initializeRoles(){
         return roleDao.listRoles();
     }
-*/
 
     @RequestMapping("/admin/new")
     public String newCustomerForm(Map<String, Object> model) {

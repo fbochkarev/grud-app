@@ -1,7 +1,6 @@
 package com.jm.dao;
 
 import com.jm.model.Role;
-import com.jm.model.User;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -14,19 +13,12 @@ public class RoleDaoImpl implements RoleDao{
     private EntityManager em;
 
     public List<Role> listRoles() {
-        List<Role> roleList = em.createQuery("from Role").getResultList();
-        return roleList;
+        return em.createQuery("from Role").getResultList();
     }
 
     @Override
     public Role findOne(Long id) {
-        System.out.println(getClass() + " ");
-        List<Role> roles = listRoles();
-        Role role = roles.stream()
-                .filter(i -> id.equals(i.getId()))
-                .findAny()                                      // If 'findAny' then return found
-                .orElse(null);
-        return role;
+        return em.find(Role.class, id);
 
     }
 
