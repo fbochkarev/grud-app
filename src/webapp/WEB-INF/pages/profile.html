@@ -15,12 +15,10 @@
 </head>
 <body>
 <header th:insert="layout/general.html :: header"></header>
-Authenticated username:
-<div sec:authentication="name"></div>
-Authenticated user roles:
-<div sec:authentication="principal.authorities"></div>
+
 <div class="container">
     <h1>Profile</h1>
+    <h3>Welcome : <span th:utext="${#request.userPrincipal.name}"></span></h3>
     <!--
         <div th:text="${#authentication.name}">
         </div>
@@ -31,73 +29,16 @@ Authenticated user roles:
         <p><b>Full Name:</b> <span th:utext="${user.username}"></span></p>
         <p><b>Last Name:</b> <span th:utext="${user.lastName}"></span></p>
         <p><b>Email:</b> <span th:utext="${user.email}"></span></p>
-        <p><b>Role:</b> <span th:utext="${user.roles}"></span></p>
+        <p><b>Role:</b>
+        <li th:each="role : ${user.roles}">
+            <span th:utext="${role.name}"></span>
+        </li>
+        </p>
 
-
-        <form action="#" th:action="@{/saveUser}" th:object="${user}"
-              method="POST">
-
-            <!-- Add hidden form field to handle update -->
-            <input type="hidden" th:field="*{id}"/>
-
-            <input type="text" th:field="*{username}" class="form-control mb-4 col-4">
-
-            <input type="text" th:field="*{lastName}" class="form-control mb-4 col-4">
-
-            <input type="text" th:field="*{email}" class="form-control mb-4 col-4">
-
-            <input type="text" th:field="*{roles}" class="form-control mb-4 col-4">
-            <!--    <ul>
-                    <li th:each="role : ${roles}">
-                        <input type="checkbox" name="sel_roles" th:field="*{sel_roles}" th:value="${role}"
-                               th:text="${role}" />
-                    </li>
-                </ul>-->
-
-        </form>
 
     </div>
 </div>
 
-<div class="container my-2">
-    <span th:text="${#user.username}"></span>
-    <div th:text="${#authentication.name}"></div>
-
-    'User is of type ' + (${user.isAdmin()} ? 'Administrator' : (${user.type} ?: 'Unknown'))
-    <a th:href="@{/admin/showNewUserForm}" class="btn btn-primary btn-sm mb-3"> Add User </a>
-
-    <div sec:authorize="isAuthenticated()">
-        Welcome, <span sec:authentication="name">Username</span>
-    </div>
-
-    <table border="1" class="table table-striped table-responsive-md">
-        <thead>
-        <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>User Email</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="user : ${users}">
-            <td th:text="${user.username}"></td>
-            <td th:text="${user.lastName}"></td>
-            <td th:text="${user.email}"></td>
-            <td><a th:href="@{/admin/showFormForUpdate/{id}(id=${user.id})}" class="btn btn-primary">Update</a>
-                <a th:href="@{/admin/deleteUser/{id}(id=${user.id})}" class="btn btn-danger">Delete</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
-
-</div>
-
-
-<strong> Username: <span sec:authentication="name"></span> </strong>
-<div th:text="${#authorization.getAuthentication()}">1</div>
-<div th:text="${40}">1</div>
 
 <!-- end of content! -->
 

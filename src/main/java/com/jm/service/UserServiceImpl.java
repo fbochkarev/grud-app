@@ -3,6 +3,7 @@ package com.jm.service;
 import com.jm.dao.UserDao;
 import com.jm.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,13 +40,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public List<User> listUsers() {
+    public List listUsers() {
         return userDao.listUsers();
     }
 
     @Override
     @Transactional
-    public List getUserFromUserList(String username) {
-        return userDao.getUserFromUserList(username);
+    public UserDetails getUserByName(String username) {
+        return userDao.getUserByName(username);
     }
+
 }

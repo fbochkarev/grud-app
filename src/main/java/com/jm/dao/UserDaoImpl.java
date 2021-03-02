@@ -23,7 +23,7 @@ public class UserDaoImpl implements UserDao {
         if (user.getPassword() != null) {
             user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         }
-        em.persist(user);
+        em.merge(user);
     }
 
     @Override
@@ -39,11 +39,11 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User getUserById(long id) {
-        return em.getReference(User.class, id);
+        return em.find(User.class, id);
     }
 
     @Override
-    public List<User> listUsers() {
+    public List listUsers() {
         return em.createQuery("from User").getResultList();
     }
 
@@ -52,7 +52,7 @@ public class UserDaoImpl implements UserDao {
         User user = em.createQuery(
                 "SELECT u from User u WHERE u.username = :username", User.class).
                 setParameter("username", username).getSingleResult();
-        System.out.println(getClass() + " - getUserByName - " + user.toString());
+        System.out.println("User_role: - " + user.getRoles());
         return user;
     }
 

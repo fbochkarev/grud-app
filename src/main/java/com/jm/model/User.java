@@ -1,15 +1,12 @@
 package com.jm.model;
 
-import com.jm.dao.RoleDao;
-import com.jm.dao.RoleDaoImpl;
-import com.jm.service.RoleService;
-import com.jm.service.RoleServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -30,7 +27,7 @@ public class User implements UserDetails {
     @Column(name = "email")
     private String email;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
@@ -109,8 +106,7 @@ public class User implements UserDetails {
         return roles;
     }
 
-/*
-    public void setRoles(String rolesFrom) {
+/*    public void setRoles(String rolesFrom) {
         List<String> roleIds = Arrays.asList(rolesFrom.split("\\s*,\\s*"));
         RoleDao roleDao = new RoleDaoImpl();
         Set<Role> roles = new HashSet<>();
@@ -118,10 +114,9 @@ public class User implements UserDetails {
             roles.add(roleDao.findOne(Long.valueOf(roleId))); // создадим Set с одним значением
         }
         this.roles = roles;
-    }
-*/
+    }*/
 
-    public void setRoles(String rolesFrom) {
+    public void setRoles(String roles) {
         this.roles = new HashSet<>();
     }
 

@@ -3,6 +3,7 @@ package com.jm.model;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "roles")
@@ -15,8 +16,8 @@ public class Role implements GrantedAuthority {
     @Column(name = "name")
     private String name;
 
-/*    @ManyToMany(mappedBy = "roles")
-    private Set<User> users;*/
+    @ManyToMany(mappedBy = "roles")
+    private Set<User> users;
 
     public Role(Long id, String name) {
         this.id = id;
@@ -42,13 +43,13 @@ public class Role implements GrantedAuthority {
         this.name = name;
     }
 
-/*    public Set<User> getUsers() {
+    public Set<User> getUsers() {
         return users;
     }
 
     public void setUsers(Set<User> users) {
         this.users = users;
-    }*/
+    }
 
     @Override
     public String toString() {

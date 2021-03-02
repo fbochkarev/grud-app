@@ -4,6 +4,7 @@ import com.jm.dao.RoleDao;
 import com.jm.dao.RoleDaoImpl;
 import com.jm.model.Role;
 import com.jm.model.User;
+import com.jm.service.RoleService;
 import com.jm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,9 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class HelloController {
@@ -22,7 +21,7 @@ public class HelloController {
     UserService userService;
 
     @Autowired
-    RoleDao roleDao;
+    RoleService roleService;
 
     @GetMapping(value = {"/", "/index"})
     public String index() {
@@ -32,7 +31,7 @@ public class HelloController {
     @GetMapping("/admin/users")
     public String userList(Model model) {
         model.addAttribute("users", userService.listUsers());
-
+//        System.out.println(getClass() + " - userList - " + userService.listUsers());
         return "users";
     }
 
@@ -40,14 +39,15 @@ public class HelloController {
     public String user(@AuthenticationPrincipal User user, Model model) {
         System.out.println(getClass().getName() + "- user -" + user);
         model.addAttribute("user", user);
+//        model.addAttribute("users", userService.listUsers());
 //        model.addAttribute("role", user.getRoles());
         return "profile";
     }
 
-    @ModelAttribute("roles")
+/*    @ModelAttribute("roles")
     public List<Role> initializeRoles(){
-        return roleDao.listRoles();
-    }
+        return roleService.listRoles();
+    }*/
 
     @RequestMapping("/admin/new")
     public String newCustomerForm(Map<String, Object> model) {
@@ -57,11 +57,16 @@ public class HelloController {
     }
 
     @PostMapping("/admin/saveUser")
-    public String saveUser(@ModelAttribute("user") User user) {
+    public String saveUser(@ModelAttribute("user") User user, @RequestParam("roles") String[] rolesFromHtml) {
         // save user to database
-
-
-        System.out.println(getClass() + " - saveUser - " + user);
+//        user.getRoles();
+        System.out.println(getClass() + " - saveUserBefore - " + user);
+        Set<Role> roleSet = user.getRoles();
+        for (String roleId : rolesFromHtml) {
+            roleSet.add(roleService.findOne(Long.valueOf(roleId))); // создадим Set с одним значением
+        }
+        System.out.println(getClass() + " - saveUserAfter - " + user);
+        System.out.println(getClass() + " - rolesFromHtml - " + Arrays.toString(rolesFromHtml));
         userService.add(user);
         return "redirect:/admin/users";
     }
@@ -78,8 +83,10 @@ public class HelloController {
     public String showFormForUpdate(@PathVariable( value = "id") long id, Model model) {
         // get user from the service
         User user = userService.getUserById(id);
+        user.setPassword("");
         // set user as a model attribute to pre-populate the form
         model.addAttribute("user", user);
+//        model.addAttribute("rolesFromController", user.getRoles());
         return "update_user";
     }
 
