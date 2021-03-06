@@ -30,7 +30,8 @@ public class HelloController {
 
     @GetMapping("/admin/users")
     public String userList(Model model) {
-        model.addAttribute("users", userService.listUsers());
+        List<User> users = userService.listUsers();
+        model.addAttribute("users", users);
 //        System.out.println(getClass() + " - userList - " + userService.listUsers());
         return "users";
     }
